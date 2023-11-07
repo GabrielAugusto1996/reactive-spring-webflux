@@ -1,6 +1,7 @@
 # reactive-spring-webflux
 
 ## Annotations
+Reactive Streams are Immutable;
 
 **Mono:** It´s just to add a single element
 
