@@ -56,6 +56,18 @@ class FluxAndMonoGeneratorServiceTest {
                     .verifyComplete();
 
         }
+
+        @Test
+        void namesFluxConcatMapAsync_FluxString_WhenSuccess() {
+            //given
+            //when
+            var namesFlux = fluxAndMonoGeneratorService.namesFluxConcatMapAsync();
+
+            //then
+            StepVerifier.create(namesFlux)
+                    .expectNext("A", "L", "E", "X", "B", "E", "N", "C", "L", "O", "E")
+                    .verifyComplete();
+        }
     }
 
     @Nested
