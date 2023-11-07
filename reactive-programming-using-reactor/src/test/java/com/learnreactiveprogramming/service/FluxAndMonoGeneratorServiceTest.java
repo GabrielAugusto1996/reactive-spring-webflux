@@ -100,5 +100,18 @@ class FluxAndMonoGeneratorServiceTest {
                     .verifyComplete();
 
         }
+
+        @Test
+        void nameMonoFlatMapMany_ListString_WhenSuccess() {
+            //given
+            //when
+            var nameMono = fluxAndMonoGeneratorService.nameMonoFlatMapMany();
+
+            //then
+            StepVerifier.create(nameMono)
+                    .expectNext("A", "l", "e", "x")
+                    .verifyComplete();
+
+        }
     }
 }

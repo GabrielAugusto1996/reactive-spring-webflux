@@ -53,6 +53,14 @@ public class FluxAndMonoGeneratorService {
         return Mono.just(1L).map(FluxAndMonoGeneratorService::getNameByCode).flatMap(FluxAndMonoGeneratorService::splitStringMonoWithDelay).log();
     }
 
+    public Flux<String> nameMonoFlatMapMany() {
+
+        return Mono.just(1L)
+                .map(FluxAndMonoGeneratorService::getNameByCode).flatMapMany(FluxAndMonoGeneratorService::splitString)
+                .log();
+    }
+
+
     private static Flux<String> splitString(String text) {
         return Flux.fromArray(text.split(""));
     }
