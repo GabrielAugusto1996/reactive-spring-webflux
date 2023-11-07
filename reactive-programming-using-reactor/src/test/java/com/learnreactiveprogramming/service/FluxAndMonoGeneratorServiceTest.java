@@ -43,6 +43,19 @@ class FluxAndMonoGeneratorServiceTest {
                     .verifyComplete();
 
         }
+
+        @Test
+        void namesFluxFlatMapAsync_FluxString_WhenSuccess() {
+            //given
+            //when
+            var namesFlux = fluxAndMonoGeneratorService.namesFluxFlatMapAsync();
+
+            //then
+            StepVerifier.create(namesFlux)
+                    .expectNextCount(11)
+                    .verifyComplete();
+
+        }
     }
 
     @Nested

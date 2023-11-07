@@ -3,7 +3,9 @@ package com.learnreactiveprogramming.service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 public class FluxAndMonoGeneratorService {
 
@@ -23,6 +25,15 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> namesFluxFlatMapAsync() {
+
+        return Flux.fromIterable(List.of(1L, 2L, 3L))
+                .transform(fluxOperator -> fluxOperator.map(FluxAndMonoGeneratorService::getNameByCode)
+                        .map(String::toUpperCase)
+                        .flatMap(FluxAndMonoGeneratorService::splitStringWithDelay))
+                .log();
+    }
+
     public Mono<String> nameMono() {
 
         return Mono.just("John").log();
@@ -30,6 +41,10 @@ public class FluxAndMonoGeneratorService {
 
     private static Flux<String> splitString(String text) {
         return Flux.fromArray(text.split(""));
+    }
+
+    private static Flux<String> splitStringWithDelay(String text) {
+        return Flux.fromArray(text.split("")).delayElements(Duration.ofMillis(new Random().nextInt(100)));
     }
 
     private static String getNameByCode(Long code) {
@@ -49,7 +64,7 @@ public class FluxAndMonoGeneratorService {
 
 
         //Flux
-        fluxAndMonoGeneratorService.namesFluxFlatMap()
+        fluxAndMonoGeneratorService.namesFluxFlatMapAsync()
                 .subscribe(System.out::println);
 
         //Mono
