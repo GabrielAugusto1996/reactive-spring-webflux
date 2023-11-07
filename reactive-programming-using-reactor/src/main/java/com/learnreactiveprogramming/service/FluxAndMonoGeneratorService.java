@@ -14,9 +14,22 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> namesFluxFlatMap() {
+
+        return Flux.fromIterable(List.of(1L, 2L, 3L))
+                .transform(fluxOperator -> fluxOperator.map(FluxAndMonoGeneratorService::getNameByCode)
+                        .map(String::toUpperCase)
+                        .flatMap(FluxAndMonoGeneratorService::splitString))
+                .log();
+    }
+
     public Mono<String> nameMono() {
 
         return Mono.just("John").log();
+    }
+
+    private static Flux<String> splitString(String text) {
+        return Flux.fromArray(text.split(""));
     }
 
     private static String getNameByCode(Long code) {
@@ -36,7 +49,7 @@ public class FluxAndMonoGeneratorService {
 
 
         //Flux
-        fluxAndMonoGeneratorService.namesFlux()
+        fluxAndMonoGeneratorService.namesFluxFlatMap()
                 .subscribe(System.out::println);
 
         //Mono
