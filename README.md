@@ -1,2 +1,7 @@
 # reactive-spring-webflux
-Spring Webflux
+
+## Annotations
+
+**Mono:** It´s just to add a single element
+
+**Flux:** It´s used to add multiple elements

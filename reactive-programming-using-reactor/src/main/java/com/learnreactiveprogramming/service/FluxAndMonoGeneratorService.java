@@ -9,12 +9,12 @@ public class FluxAndMonoGeneratorService {
 
     public Flux<String> namesFlux() {
 
-        return Flux.fromIterable(List.of("Alex", "Ben", "Cloe"));
+        return Flux.fromIterable(List.of("Alex", "Ben", "Cloe")).log();
     }
 
     public Mono<String> nameMono() {
 
-        return Mono.just("John");
+        return Mono.just("John").log();
     }
 
     public static void main(String[] args) {
