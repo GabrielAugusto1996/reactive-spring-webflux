@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 class FluxAndMonoGeneratorServiceTest {
 
     private final FluxAndMonoGeneratorService fluxAndMonoGeneratorService;
@@ -81,7 +83,20 @@ class FluxAndMonoGeneratorServiceTest {
 
             //then
             StepVerifier.create(nameMono)
-                    .expectNext("John")
+                    .expectNext("Alex")
+                    .verifyComplete();
+
+        }
+
+        @Test
+        void nameMonoFlatMap_ListString_WhenSuccess() {
+            //given
+            //when
+            var nameMono = fluxAndMonoGeneratorService.nameMonoFlatMap();
+
+            //then
+            StepVerifier.create(nameMono)
+                    .expectNext(List.of("A", "l", "e", "x"))
                     .verifyComplete();
 
         }

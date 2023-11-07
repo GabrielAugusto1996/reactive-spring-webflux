@@ -45,7 +45,12 @@ public class FluxAndMonoGeneratorService {
 
     public Mono<String> nameMono() {
 
-        return Mono.just("John").log();
+        return Mono.just(1L).map(FluxAndMonoGeneratorService::getNameByCode).log();
+    }
+
+    public Mono<List<String>> nameMonoFlatMap() {
+
+        return Mono.just(1L).map(FluxAndMonoGeneratorService::getNameByCode).flatMap(FluxAndMonoGeneratorService::splitStringMonoWithDelay).log();
     }
 
     private static Flux<String> splitString(String text) {
@@ -54,6 +59,10 @@ public class FluxAndMonoGeneratorService {
 
     private static Flux<String> splitStringWithDelay(String text) {
         return Flux.fromArray(text.split("")).delayElements(Duration.ofMillis(new Random().nextInt(100)));
+    }
+
+    private static Mono<List<String>> splitStringMonoWithDelay(String text) {
+        return Mono.just(List.of(text.split("")));
     }
 
     private static String getNameByCode(Long code) {
@@ -78,6 +87,6 @@ public class FluxAndMonoGeneratorService {
 
         //Mono
 
-        fluxAndMonoGeneratorService.nameMono().subscribe(System.out::println);
+        fluxAndMonoGeneratorService.nameMonoFlatMap().subscribe(System.out::println);
     }
 }
