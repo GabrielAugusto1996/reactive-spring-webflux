@@ -20,7 +20,7 @@ class FluxAndMonoGeneratorServiceTest {
 
         //then
         StepVerifier.create(namesFlux)
-                .expectNext("Alex", "Ben", "Cloe")
+                .expectNext("ALEX", "BEN", "CLOE")
                 //.expectNextCount(3) You can use it to verify if you flux have X elements
                 .verifyComplete();
 

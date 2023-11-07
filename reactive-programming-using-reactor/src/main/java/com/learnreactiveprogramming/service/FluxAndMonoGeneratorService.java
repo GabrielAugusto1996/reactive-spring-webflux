@@ -9,12 +9,25 @@ public class FluxAndMonoGeneratorService {
 
     public Flux<String> namesFlux() {
 
-        return Flux.fromIterable(List.of("Alex", "Ben", "Cloe")).log();
+        return Flux.fromIterable(List.of(1L, 2L, 3L))
+                .transform(fluxOperator -> fluxOperator.map(FluxAndMonoGeneratorService::getNameByCode).map(String::toUpperCase))
+                .log();
     }
 
     public Mono<String> nameMono() {
 
         return Mono.just("John").log();
+    }
+
+    private static String getNameByCode(Long code) {
+        if (code == 1) {
+            return "Alex";
+        } else if (code == 2) {
+            return "Ben";
+        } else if (code == 3) {
+            return "Cloe";
+        }
+        return null;
     }
 
     public static void main(String[] args) {
