@@ -102,6 +102,33 @@ public class FluxAndMonoGeneratorService {
         return Flux.concat(firstFluxOperator).concatWith(secondFluxOperator).log();
     }
 
+    public Flux<String> exploreMerge() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(120));
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(150));
+
+        return Flux.merge(firstFluxOperator, secondFluxOperator).log();
+    }
+
+    public Flux<String> exploreMergeWith() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(120));
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(150));
+
+        return Flux.merge(firstFluxOperator).mergeWith(secondFluxOperator).log();
+    }
+
+    public Flux<String> exploreConcatWithMono() {
+        Mono<String> firstMono = Mono.just("A");
+        Mono<String> secondMono = Mono.just("B");
+
+        return firstMono.concatWith(secondMono).log();
+    }
+
+    public Flux<String> exploreMergeWithMono() {
+        Mono<String> firstMono = Mono.just("A").delayElement(Duration.ofMillis(150));;
+        Mono<String> secondMono = Mono.just("B").delayElement(Duration.ofMillis(100));
+
+        return firstMono.mergeWith(secondMono).log();
+    }
 
     private static Flux<String> splitString(String text) {
         return Flux.fromArray(text.split(""));
@@ -113,13 +140,6 @@ public class FluxAndMonoGeneratorService {
 
     private static Mono<List<String>> splitStringMonoWithDelay(String text) {
         return Mono.just(List.of(text.split("")));
-    }
-
-    public Flux<String> exploreConcatWithMono() {
-        Mono<String> firstMono = Mono.just("A");
-        Mono<String> secondMono = Mono.just("B");
-
-        return firstMono.concatWith(secondMono).log();
     }
 
 

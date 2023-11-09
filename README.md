@@ -14,3 +14,8 @@ SwitchIfEmpty vs DefaultIfEmpty: **switchIfEmpty** accept a publisher, while **d
 
 Concat and ConcatWith are operators that combine more than one reactive stream.
 Concat is just available for Flux and the method is static, ConcatWith is available for Flux and Mono and the method is an instance.
+
+Concat operators vs Merge operators: Concat operators are in sequence while merge operators are async.
+
+Merge and MergeWith are operators that combine more than one reactive stream.
+Merge is just available for Flux and the method is static, MergeWith is available for Flux and Mono and the method is an instance.
