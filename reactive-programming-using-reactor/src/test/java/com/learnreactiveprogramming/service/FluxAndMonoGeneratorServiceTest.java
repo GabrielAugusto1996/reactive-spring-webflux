@@ -130,6 +130,18 @@ class FluxAndMonoGeneratorServiceTest {
                     .expectNext("A", "B", "C", "D", "E", "F")
                     .verifyComplete();
         }
+
+        @Test
+        void exploreZip_FluxString_WhenSuccess() {
+            //given
+            //when
+            var exploreConcat = fluxAndMonoGeneratorService.exploreZip();
+
+            //then
+            StepVerifier.create(exploreConcat)
+                    .expectNext("AD", "BE", "CF")
+                    .verifyComplete();
+        }
     }
 
     @Nested
