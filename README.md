@@ -9,3 +9,5 @@ Reactive Streams are Immutable;
 
 ConcatMap vs FlatMap: **concatMap** does the same thing that **flatMap**, the only difference between them is that concatMap keep the ordering sequence.
 FlatMap is faster than ConcatMap (Use ConcatMap only if the order matter);
+
+SwitchIfEmpty vs DefaultIfEmpty: **switchIfEmpty** accept a publisher, while **defaultIfEmpty** accept a type.

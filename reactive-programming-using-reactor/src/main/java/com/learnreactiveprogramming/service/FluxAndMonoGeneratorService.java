@@ -28,12 +28,28 @@ public class FluxAndMonoGeneratorService {
 
     public Flux<String> namesFluxTransform() {
 
+        //You can use it to reuse the same logic in different places of your code
         Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase);
 
         return Flux.fromIterable(List.of("alex", "ben", "cloe"))
                 .transform(filterMap)
                         .map(String::toUpperCase)
                         .flatMap(FluxAndMonoGeneratorService::splitString)
+                .defaultIfEmpty("default") //If not is found, you can use to get a default value
+                .log();
+    }
+
+    public Flux<String> namesFluxSwitchIfEmpty() {
+
+        Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase);
+
+        Flux<String> defaultFlux = Flux.just("default").transform(filterMap);
+
+        return Flux.fromIterable(List.of("alex", "ben", "cloe"))
+                .transform(filterMap)
+                .map(String::toUpperCase)
+                .flatMap(FluxAndMonoGeneratorService::splitString)
+                .switchIfEmpty(defaultFlux)
                 .log();
     }
 
