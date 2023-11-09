@@ -116,6 +116,14 @@ public class FluxAndMonoGeneratorService {
         return Flux.merge(firstFluxOperator).mergeWith(secondFluxOperator).log();
     }
 
+    //Use it when order is important
+    public Flux<String> exploreMergeSequential() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(200));
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(150));
+
+        return Flux.mergeSequential(firstFluxOperator, secondFluxOperator).log();
+    }
+
     public Flux<String> exploreConcatWithMono() {
         Mono<String> firstMono = Mono.just("A");
         Mono<String> secondMono = Mono.just("B");
