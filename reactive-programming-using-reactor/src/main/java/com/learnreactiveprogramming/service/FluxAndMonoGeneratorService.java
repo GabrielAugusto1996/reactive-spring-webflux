@@ -131,6 +131,13 @@ public class FluxAndMonoGeneratorService {
         return Flux.zip(firstFluxOperator, secondFluxOperator, (firstResult, secondResult) -> firstResult + secondResult).log();
     }
 
+    public Flux<String> exploreZipWithTuple() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(120));
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(150));
+
+        return Flux.zip(firstFluxOperator, secondFluxOperator).map(tuple4 -> tuple4.getT1() + tuple4.getT2()).log();
+    }
+
     public Flux<String> exploreConcatWithMono() {
         Mono<String> firstMono = Mono.just("A");
         Mono<String> secondMono = Mono.just("B");
