@@ -70,6 +70,30 @@ class FluxAndMonoGeneratorServiceTest {
                     .expectNext("A", "L", "E", "X", "B", "E", "N", "C", "L", "O", "E")
                     .verifyComplete();
         }
+
+        @Test
+        void exploreConcat_FluxString_WhenSuccess() {
+            //given
+            //when
+            var exploreConcat = fluxAndMonoGeneratorService.exploreConcat();
+
+            //then
+            StepVerifier.create(exploreConcat)
+                    .expectNext("A", "B", "C", "D", "E", "F")
+                    .verifyComplete();
+        }
+
+        @Test
+        void exploreConcatWith_FluxString_WhenSuccess() {
+            //given
+            //when
+            var exploreConcat = fluxAndMonoGeneratorService.exploreConcatWith();
+
+            //then
+            StepVerifier.create(exploreConcat)
+                    .expectNext("A", "B", "C", "D", "E", "F")
+                    .verifyComplete();
+        }
     }
 
     @Nested
@@ -112,6 +136,18 @@ class FluxAndMonoGeneratorServiceTest {
                     .expectNext("A", "l", "e", "x")
                     .verifyComplete();
 
+        }
+
+        @Test
+        void exploreConcatWithMono_FluxString_WhenSuccess() {
+            //given
+            //when
+            var exploreConcat = fluxAndMonoGeneratorService.exploreConcatWithMono();
+
+            //then
+            StepVerifier.create(exploreConcat)
+                    .expectNext("A", "B")
+                    .verifyComplete();
         }
     }
 }

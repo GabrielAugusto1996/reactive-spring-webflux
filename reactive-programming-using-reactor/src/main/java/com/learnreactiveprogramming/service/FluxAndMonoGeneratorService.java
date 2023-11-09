@@ -88,6 +88,20 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> exploreConcat() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C");
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F");
+
+        return Flux.concat(firstFluxOperator, secondFluxOperator).log();
+    }
+
+    public Flux<String> exploreConcatWith() {
+        Flux<String> firstFluxOperator = Flux.just("A", "B", "C");
+        Flux<String> secondFluxOperator = Flux.just("D", "E", "F");
+
+        return Flux.concat(firstFluxOperator).concatWith(secondFluxOperator).log();
+    }
+
 
     private static Flux<String> splitString(String text) {
         return Flux.fromArray(text.split(""));
@@ -100,6 +114,14 @@ public class FluxAndMonoGeneratorService {
     private static Mono<List<String>> splitStringMonoWithDelay(String text) {
         return Mono.just(List.of(text.split("")));
     }
+
+    public Flux<String> exploreConcatWithMono() {
+        Mono<String> firstMono = Mono.just("A");
+        Mono<String> secondMono = Mono.just("B");
+
+        return firstMono.concatWith(secondMono).log();
+    }
+
 
     private static String getNameByCode(Long code) {
         if (code == 1) {
