@@ -74,4 +74,22 @@ class FluxAndMonoControllerTest {
                 .hasSize(1);
     }
 
+    @Test
+    void stream() {
+        var fluxResultBody = webTestClient
+                .get()
+                .uri(URI.create("/stream"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .returnResult(Integer.class)
+                .getResponseBody();
+
+        StepVerifier
+                .create(fluxResultBody)
+                .expectNextCount(3)
+                .thenCancel()
+                .verify();
+    }
+
 }
