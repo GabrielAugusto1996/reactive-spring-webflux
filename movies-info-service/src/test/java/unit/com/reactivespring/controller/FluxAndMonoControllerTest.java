@@ -61,4 +61,17 @@ class FluxAndMonoControllerTest {
                 .expectBodyList(Integer.class)
                 .consumeWith(list -> Objects.requireNonNull(list.getResponseBody()).forEach(Assertions::assertNotNull));
     }
+
+    @Test
+    void mono() {
+        webTestClient
+                .get()
+                .uri(URI.create("/mono"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Integer.class)
+                .hasSize(1);
+    }
+
 }
