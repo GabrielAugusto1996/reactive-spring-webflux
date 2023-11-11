@@ -20,4 +20,16 @@ public final class MovieInfoMock {
 
         return movieInfo;
     }
+
+    public static MovieInfo createMock(String name) {
+        final MovieInfo movieInfo = new MovieInfo();
+
+
+        movieInfo.setName(name);
+        movieInfo.setYear(2005);
+        movieInfo.setReleaseDate(LocalDate.of(2005, 12, 30));
+        movieInfo.setCast(List.of("Anakin", "Obi-wan", "Luke", "Han Solo"));
+
+        return movieInfo;
+    }
 }

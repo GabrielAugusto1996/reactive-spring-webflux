@@ -15,6 +15,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataMongoTest
 @ActiveProfiles(profiles = "test")
@@ -59,6 +60,47 @@ class MovieInfoRepositoryIntTest {
         StepVerifier.create(movieInfo)
                 .consumeNextWith(result -> {
                     assertEquals("Star Wars", result.getName());
+                    assertEquals(2005, result.getYear());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void save_MovieInfo_WhenSuccess() {
+        //given
+        var name = "Star Wars: New Hope";
+
+        MovieInfo movieInfoToSave = MovieInfoMock.createMock(name);
+
+        //when
+        Mono<MovieInfo> movieInfo = movieInfoRepository.save(movieInfoToSave).log();
+
+        //then
+        StepVerifier.create(movieInfo)
+                .consumeNextWith(result -> {
+                    assertNotNull(result.getMovieInfoId());
+                    assertEquals("Star Wars: New Hope", result.getName());
+                    assertEquals(2005, result.getYear());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void update_MovieInfo_WhenSuccess() {
+        //given
+        var name = "Star Wars2";
+
+        MovieInfo movieInfoToSave = MovieInfoMock.getMock("1");
+        movieInfoToSave.setName(name);
+
+        //when
+        Mono<MovieInfo> movieInfo = movieInfoRepository.save(movieInfoToSave).log();
+
+        //then
+        StepVerifier.create(movieInfo)
+                .consumeNextWith(result -> {
+                    assertNotNull(result.getMovieInfoId());
+                    assertEquals("Star Wars2", result.getName());
                     assertEquals(2005, result.getYear());
                 })
                 .verifyComplete();
