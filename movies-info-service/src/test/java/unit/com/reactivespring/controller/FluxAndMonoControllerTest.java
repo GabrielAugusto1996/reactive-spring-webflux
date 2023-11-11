@@ -1,12 +1,17 @@
 package com.reactivespring.controller;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +24,6 @@ class FluxAndMonoControllerTest {
 
     @Test
     void flux() {
-        //given
-        //when
         webTestClient
                 .get()
                 .uri(URI.create("/flux"))
@@ -29,8 +32,33 @@ class FluxAndMonoControllerTest {
                 .is2xxSuccessful()
                 .expectBodyList(Integer.class)
                 .hasSize(3);
+    }
 
-        //then
+    @Test
+    void fluxApproachTwo() {
+        var fluxResultBody = webTestClient
+                .get()
+                .uri(URI.create("/flux"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .returnResult(Integer.class)
+                .getResponseBody();
 
+        StepVerifier
+                .create(fluxResultBody)
+                .expectNextCount(3);
+    }
+
+    @Test
+    void fluxApproachThree() {
+        webTestClient
+                .get()
+                .uri(URI.create("/flux"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Integer.class)
+                .consumeWith(list -> Objects.requireNonNull(list.getResponseBody()).forEach(Assertions::assertNotNull));
     }
 }
