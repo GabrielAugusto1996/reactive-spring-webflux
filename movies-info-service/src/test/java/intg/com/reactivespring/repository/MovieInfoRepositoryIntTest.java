@@ -106,4 +106,19 @@ class MovieInfoRepositoryIntTest {
                 .verifyComplete();
     }
 
+    @Test
+    void delete_MovieInfo_WhenSuccess() {
+        //given
+        var movieId = "1";
+
+        //when
+        movieInfoRepository.deleteById(movieId).block();
+        Flux<MovieInfo> movieInfoFlux = movieInfoRepository.findAll().log();
+
+        //then
+        StepVerifier.create(movieInfoFlux)
+                .expectNextCount(0L)
+                .verifyComplete();
+    }
+
 }
