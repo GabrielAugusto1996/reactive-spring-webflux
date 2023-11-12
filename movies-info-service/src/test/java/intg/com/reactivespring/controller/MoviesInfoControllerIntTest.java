@@ -107,6 +107,21 @@ class MoviesInfoControllerIntTest {
     }
 
     @Test
+    void update_MovieInfo_WhenNotFound()  {
+        String id = "2";
+
+        MovieInfo movieInfo = MovieInfoMock.getMock(id);
+        movieInfo.setName("Star Wars2");
+
+        webTestClient
+                .put()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     void delete_MovieInfo_WhenSuccess()  {
         String id = "1";
 

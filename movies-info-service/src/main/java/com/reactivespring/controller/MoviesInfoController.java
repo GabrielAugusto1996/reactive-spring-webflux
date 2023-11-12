@@ -52,7 +52,8 @@ public class MoviesInfoController {
     public Mono<ResponseEntity<MovieInfo>> update(@PathVariable("id") String id, @Valid @RequestBody MovieInfo movieInfo) {
 
         return this.movieInfoService.update(id, movieInfo)
-                .map(movie -> ResponseEntity.status(HttpStatus.OK).body(movie));
+                .map(movie -> ResponseEntity.status(HttpStatus.OK).body(movie))
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @DeleteMapping("/{id}")
