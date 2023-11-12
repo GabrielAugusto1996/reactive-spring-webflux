@@ -15,6 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.net.URI;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,6 +59,25 @@ class MoviesInfoControllerIntTest {
 
                     assertNotNull(responseBody);
                     assertNotNull(responseBody.getMovieInfoId());
+                });
+    }
+
+    @Test
+    void findById_MovieInfo_WhenSuccess()  {
+        String id = "1";
+
+        webTestClient
+                .get()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(MovieInfo.class)
+                .consumeWith(result -> {
+                    MovieInfo responseBody = result.getResponseBody();
+
+                    assertNotNull(responseBody);
+                    assertNotNull(responseBody.getMovieInfoId());
+                    assertEquals("Star Wars", responseBody.getName());
                 });
     }
 }
