@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.net.URI;
 import java.util.List;
@@ -103,5 +105,22 @@ class MoviesInfoControllerIntTest {
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Star Wars2")
                 .jsonPath("$.year").isEqualTo(2005);
+    }
+
+    @Test
+    void delete_MovieInfo_WhenSuccess()  {
+        String id = "1";
+
+        webTestClient
+                .delete()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .exchange()
+                .expectStatus().isNoContent();
+
+        Flux<MovieInfo> movieInfoFlux = movieInfoRepository.findAll().log();
+
+        StepVerifier.create(movieInfoFlux)
+                .expectNextCount(0L)
+                .verifyComplete();
     }
 }
