@@ -71,14 +71,9 @@ class MoviesInfoControllerIntTest {
                 .uri(URI.create(BASE_URI + "/" + id))
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(MovieInfo.class)
-                .consumeWith(result -> {
-                    MovieInfo responseBody = result.getResponseBody();
-
-                    assertNotNull(responseBody);
-                    assertNotNull(responseBody.getMovieInfoId());
-                    assertEquals("Star Wars", responseBody.getName());
-                });
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Star Wars")
+                .jsonPath("$.year").isEqualTo(2005);
     }
 
     @Test
@@ -90,5 +85,23 @@ class MoviesInfoControllerIntTest {
                 .expectStatus().isOk()
                 .expectBodyList(MovieInfo.class)
                 .hasSize(1);
+    }
+
+    @Test
+    void update_MovieInfo_WhenSuccess()  {
+        String id = "1";
+
+        MovieInfo movieInfo = MovieInfoMock.getMock(id);
+        movieInfo.setName("Star Wars2");
+
+        webTestClient
+                .put()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Star Wars2")
+                .jsonPath("$.year").isEqualTo(2005);
     }
 }

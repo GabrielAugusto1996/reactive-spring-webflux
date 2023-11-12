@@ -26,4 +26,15 @@ public class MovieInfoService {
     public Flux<MovieInfo> findAll() {
         return this.movieInfoRepository.findAll();
     }
+
+    public Mono<MovieInfo> update(String id, MovieInfo movieInfo) {
+        return this.movieInfoRepository.findById(id).flatMap(movieInfoToUpdate -> {
+            movieInfoToUpdate.setName(movieInfo.getName());
+            movieInfoToUpdate.setYear(movieInfo.getYear());
+            movieInfoToUpdate.setReleaseDate(movieInfo.getReleaseDate());
+            movieInfoToUpdate.setCast(movieInfo.getCast());
+
+            return this.movieInfoRepository.save(movieInfoToUpdate);
+        });
+    }
 }
