@@ -5,11 +5,13 @@ import com.reactivespring.service.MovieInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/v1")
 public class MoviesInfoController {
 
     private final MovieInfoService movieInfoService;
@@ -18,7 +20,7 @@ public class MoviesInfoController {
         this.movieInfoService = movieInfoService;
     }
 
-    @PostMapping
+    @PostMapping("/movieinfos")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<MovieInfo> addMovieInfo(@RequestBody MovieInfo movieInfo) {
 
