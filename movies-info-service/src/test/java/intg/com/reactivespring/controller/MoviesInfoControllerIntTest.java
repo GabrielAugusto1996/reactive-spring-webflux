@@ -78,6 +78,17 @@ class MoviesInfoControllerIntTest {
     }
 
     @Test
+    void findById_MovieInfo_WhenNotFound()  {
+        String id = "2";
+
+        webTestClient
+                .get()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     void findAll_MovieInfo_WhenSuccess()  {
         webTestClient
                 .get()

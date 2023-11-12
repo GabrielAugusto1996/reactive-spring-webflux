@@ -29,20 +29,21 @@ public class MoviesInfoController {
     }
 
     @PostMapping
-    public Mono<MovieInfo> addMovieInfo(@Valid @RequestBody MovieInfo movieInfo) {
+    public Mono<ResponseEntity<MovieInfo>> addMovieInfo(@Valid @RequestBody MovieInfo movieInfo) {
 
-        return this.movieInfoService.addMovie(movieInfo);
+        return this.movieInfoService.addMovie(movieInfo)
+                .map(movie -> ResponseEntity.status(HttpStatus.CREATED).body(movie));
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Mono<MovieInfo> findById(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<MovieInfo>> findById(@PathVariable("id") String id) {
 
-        return this.movieInfoService.findById(id);
+        return this.movieInfoService.findById(id)
+                .map(movie -> ResponseEntity.status(HttpStatus.OK).body(movie))
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public Flux<MovieInfo> findAll() {
 
         return this.movieInfoService.findAll();
