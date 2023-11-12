@@ -80,4 +80,15 @@ class MoviesInfoControllerIntTest {
                     assertEquals("Star Wars", responseBody.getName());
                 });
     }
+
+    @Test
+    void findAll_MovieInfo_WhenSuccess()  {
+        webTestClient
+                .get()
+                .uri(URI.create(BASE_URI))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(MovieInfo.class)
+                .hasSize(1);
+    }
 }
