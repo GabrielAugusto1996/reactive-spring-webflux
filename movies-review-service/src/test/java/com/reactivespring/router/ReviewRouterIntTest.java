@@ -70,4 +70,15 @@ class ReviewRouterIntTest {
                 });
     }
 
+    @Test
+    void findAll_Review_WhenSuccess() {
+         webTestClient
+                .get()
+                .uri(URI.create(BASE_URI))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Review.class)
+                 .hasSize(1);
+    }
+
 }
