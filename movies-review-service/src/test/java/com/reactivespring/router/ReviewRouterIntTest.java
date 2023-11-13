@@ -14,6 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.net.URI;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,7 +33,7 @@ class ReviewRouterIntTest {
     @BeforeEach
     void setup() {
         final Review review = new Review();
-        review.setReviewId(null);
+        review.setReviewId("1");
         review.setComment("This movie is amazing");
         review.setRating(10.0);
         review.setMovieInfoId(1L);
@@ -79,6 +80,44 @@ class ReviewRouterIntTest {
                 .expectStatus().isOk()
                 .expectBodyList(Review.class)
                  .hasSize(1);
+    }
+
+    @Test
+    void updateReview_Review_WhenSuccess() {
+        final Review review = new Review();
+        review.setComment("This movie is good");
+        review.setRating(10.0);
+        review.setMovieInfoId(1L);
+
+        webTestClient
+                .put()
+                .uri(URI.create(BASE_URI + "/" + "1"))
+                .bodyValue(review)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Review.class)
+                .consumeWith(result -> {
+                    Review responseBody = result.getResponseBody();
+
+                    assertNotNull(responseBody);
+                    assertNotNull(responseBody.getReviewId());
+                    assertEquals("This movie is good", responseBody.getComment());
+                });
+    }
+
+    @Test
+    void updateReview_Review_WhenNotFound() {
+        final Review review = new Review();
+        review.setComment("This movie is good");
+        review.setRating(10.0);
+        review.setMovieInfoId(1L);
+
+        webTestClient
+                .put()
+                .uri(URI.create(BASE_URI + "/" + "2"))
+                .bodyValue(review)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
 }

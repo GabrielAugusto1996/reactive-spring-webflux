@@ -29,4 +29,21 @@ public class ReviewHandler {
 
         return ServerResponse.ok().body(reviews, Review.class);
     }
+
+    public Mono<ServerResponse> updateReview(ServerRequest serverRequest) {
+        String reviewId = serverRequest.pathVariable("id");
+
+        var existingReview = reviewReactiveRepository.findById(reviewId);
+
+        return existingReview.flatMap(review -> serverRequest.bodyToMono(Review.class)
+                        .map(reqReview -> {
+                            review.setComment(reqReview.getComment());
+                            review.setRating(reqReview.getRating());
+
+                            return review;
+                        }))
+                .flatMap(reviewReactiveRepository::save)
+                .flatMap(review -> ServerResponse.ok().bodyValue(review))
+                .switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND).build());
+    }
 }
