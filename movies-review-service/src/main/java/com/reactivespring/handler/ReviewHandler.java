@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Component
 public class ReviewHandler {
 
@@ -25,7 +27,11 @@ public class ReviewHandler {
     }
 
     public Mono<ServerResponse> findAll(ServerRequest serverRequest) {
-        Flux<Review> reviews = reviewReactiveRepository.findAll();
+        Optional<String> movieInfoId = serverRequest.queryParam("moviesinfo");
+
+        Flux<Review> reviews = movieInfoId.isPresent()
+                ? reviewReactiveRepository.findAllByMovieInfoId(Long.parseLong(movieInfoId.get()))
+                : reviewReactiveRepository.findAll();
 
         return ServerResponse.ok().body(reviews, Review.class);
     }

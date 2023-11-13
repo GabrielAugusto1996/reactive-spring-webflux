@@ -85,6 +85,17 @@ class ReviewRouterIntTest {
     }
 
     @Test
+    void findAllByMovieInfoId_Review_WhenSuccess() {
+         webTestClient
+                .get()
+                .uri(URI.create(BASE_URI + "?moviesinfo=1"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Review.class)
+                 .hasSize(1);
+    }
+
+    @Test
     void updateReview_Review_WhenSuccess() {
         final Review review = new Review();
         review.setComment("This movie is good");
@@ -123,7 +134,7 @@ class ReviewRouterIntTest {
     }
 
     @Test
-    void deleteReview_Review_WhenNotFound() {
+    void deleteReview_Review_WhenSuccess() {
         webTestClient
                 .delete()
                 .uri(URI.create(BASE_URI + "/" + "1"))
