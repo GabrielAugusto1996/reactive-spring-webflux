@@ -66,6 +66,23 @@ class MovieInfoRepositoryIntTest {
     }
 
     @Test
+    void findOneByName_MovieInfo_WhenSuccess() {
+        //given
+        var name = "Star Wars";
+
+        //when
+        Mono<MovieInfo> movieInfo = movieInfoRepository.findOneByName(name).log();
+
+        //then
+        StepVerifier.create(movieInfo)
+                .consumeNextWith(result -> {
+                    assertEquals("Star Wars", result.getName());
+                    assertEquals(2005, result.getYear());
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void save_MovieInfo_WhenSuccess() {
         //given
         var name = "Star Wars: New Hope";
