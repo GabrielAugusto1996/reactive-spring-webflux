@@ -46,4 +46,9 @@ public class ReviewHandler {
                 .flatMap(review -> ServerResponse.ok().bodyValue(review))
                 .switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND).build());
     }
+
+    public Mono<ServerResponse> deleteReview(ServerRequest serverRequest) {
+        return this.reviewReactiveRepository.deleteById(serverRequest.pathVariable("id"))
+                .then(ServerResponse.noContent().build());
+    }
 }

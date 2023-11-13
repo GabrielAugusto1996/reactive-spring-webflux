@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.net.URI;
 import java.util.List;
@@ -118,6 +120,20 @@ class ReviewRouterIntTest {
                 .bodyValue(review)
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void deleteReview_Review_WhenNotFound() {
+        webTestClient
+                .delete()
+                .uri(URI.create(BASE_URI + "/" + "1"))
+                .exchange()
+                .expectStatus().isNoContent();
+
+        Flux<Review> reviews = reviewReactiveRepository.findAll();
+
+        StepVerifier.create(reviews)
+                .expectNextCount(0L);
     }
 
 }
