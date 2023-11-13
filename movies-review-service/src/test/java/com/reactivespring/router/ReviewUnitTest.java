@@ -1,6 +1,7 @@
 package com.reactivespring.router;
 
 import com.reactivespring.domain.Review;
+import com.reactivespring.exception.GlobalErrorHandler;
 import com.reactivespring.handler.ReviewHandler;
 import com.reactivespring.repository.ReviewReactiveRepository;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest
-@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class})
+@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class, GlobalErrorHandler.class})
 @ActiveProfiles(profiles = "test")
 @AutoConfigureWebTestClient
 public class ReviewUnitTest {
@@ -58,6 +60,30 @@ public class ReviewUnitTest {
                     assertNotNull(responseBody);
                     assertNotNull(responseBody.getReviewId());
                 });
+    }
+
+    @Test
+    void addReview_validation() {
+        //given
+        final Review review = new Review();
+        review.setReviewId("1");
+        review.setComment("This movie is good");
+        review.setRating(-10.0);
+        review.setMovieInfoId(null);
+
+        when(reviewReactiveRepository.save(review)).thenReturn(Mono.just(review));
+
+        //when
+
+        webTestClient
+                .post()
+                .uri(BASE_URI)
+                .bodyValue(review)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .isEqualTo("rating.movieInfoId : must not be null,rating.negative : rating is negative and please pass a non-negative value");
     }
 
     @Test

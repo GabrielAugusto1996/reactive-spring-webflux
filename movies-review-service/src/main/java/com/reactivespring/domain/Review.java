@@ -19,7 +19,7 @@ public class Review {
     @Id
     private String reviewId;
 
-    @NotNull
+    @NotNull(message = "rating.movieInfoId : must not be null")
     @Positive
     private Long movieInfoId;
 
