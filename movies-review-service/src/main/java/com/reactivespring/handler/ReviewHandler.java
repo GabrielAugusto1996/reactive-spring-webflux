@@ -1,6 +1,7 @@
 package com.reactivespring.handler;
 
 import com.reactivespring.domain.Review;
+import com.reactivespring.exception.ReviewDataException;
 import com.reactivespring.repository.ReviewReactiveRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -9,19 +10,25 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class ReviewHandler {
 
     private final ReviewReactiveRepository reviewReactiveRepository;
+    private final Validator validator;
 
-    public ReviewHandler(ReviewReactiveRepository reviewReactiveRepository) {
+    public ReviewHandler(ReviewReactiveRepository reviewReactiveRepository, Validator validator) {
         this.reviewReactiveRepository = reviewReactiveRepository;
+        this.validator = validator;
     }
 
     public Mono<ServerResponse> addReview(ServerRequest request) {
         return request.bodyToMono(Review.class)
+                .doOnNext(this::validate)
                 .flatMap(reviewReactiveRepository::save)
                 .flatMap(savedReview -> ServerResponse.status(HttpStatus.CREATED).bodyValue(savedReview));
     }
@@ -56,5 +63,18 @@ public class ReviewHandler {
     public Mono<ServerResponse> deleteReview(ServerRequest serverRequest) {
         return this.reviewReactiveRepository.deleteById(serverRequest.pathVariable("id"))
                 .then(ServerResponse.noContent().build());
+    }
+
+    private void validate(Review review) {
+        var constraintViolations = validator.validate(review);
+        if(constraintViolations.size() > 0) {
+            var errorMessage = constraintViolations
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .sorted()
+                    .collect(Collectors.joining(","));
+            throw new ReviewDataException(errorMessage);
+
+        }
     }
 }
