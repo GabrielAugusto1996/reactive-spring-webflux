@@ -100,6 +100,17 @@ class MoviesInfoControllerIntTest {
     }
 
     @Test
+    void findAllByYear_MovieInfo_WhenSuccess()  {
+        webTestClient
+                .get()
+                .uri(URI.create(BASE_URI + "/year/" + "2005"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(MovieInfo.class)
+                .hasSize(1);
+    }
+
+    @Test
     void update_MovieInfo_WhenSuccess()  {
         String id = "1";
 

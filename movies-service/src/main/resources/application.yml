@@ -9,9 +9,7 @@ spring:
         - local
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: local
+      uri: mongodb://root:root@localhost:27017/?authSource=admin&retryWrites=true&w=majority
 ---
 spring:
   config:
@@ -20,9 +18,7 @@ spring:
         - non-prod
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: local
+      uri: mongodb://root:root@localhost:27017/?authSource=admin&retryWrites=true&w=majority
 ---
 spring:
   config:
@@ -30,6 +26,4 @@ spring:
       on-profile: prod
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: local
+      uri: mongodb://root:root@localhost:27017/?authSource=admin&retryWrites=true&w=majority

@@ -49,6 +49,12 @@ public class MoviesInfoController {
         return this.movieInfoService.findAll();
     }
 
+    @GetMapping("/year/{year}")
+    public Flux<MovieInfo> findAllByYear(@PathVariable("year") Integer year) {
+
+        return this.movieInfoService.findAllByYear(year);
+    }
+
     @PutMapping("/{id}")
     public Mono<ResponseEntity<MovieInfo>> update(@PathVariable("id") String id, @Valid @RequestBody MovieInfo movieInfo) {
 
