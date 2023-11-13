@@ -1,5 +1,8 @@
 # reactive-spring-webflux
 
+movies-info-service: Uses standard REST API (RestController)
+moviews-review.service: Uses Functional APIs (Handler and Router)
+
 ## Annotations
 Reactive Streams are Immutable;
 
