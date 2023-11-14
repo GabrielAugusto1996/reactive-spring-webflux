@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.net.URI;
+import java.time.Duration;
 
 @Component
 public class MovieInfoRestClient {
@@ -42,6 +44,6 @@ public class MovieInfoRestClient {
                         .bodyToMono(String.class)
                         .flatMap(responseMessage -> Mono.error(new MoviesInfoServerException(responseMessage))))
                 .bodyToMono(MovieInfo.class)
-                .retry(3L);
+                .retryWhen(Retry.backoff(3L, Duration.ofMillis(500)));
     }
 }
