@@ -2,6 +2,7 @@ package com.reactivespring.handler;
 
 import com.reactivespring.domain.Review;
 import com.reactivespring.exception.ReviewDataException;
+import com.reactivespring.exception.ReviewNotFoundException;
 import com.reactivespring.repository.ReviewReactiveRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -62,7 +63,8 @@ public class ReviewHandler {
 
     public Mono<ServerResponse> deleteReview(ServerRequest serverRequest) {
         return this.reviewReactiveRepository.deleteById(serverRequest.pathVariable("id"))
-                .then(ServerResponse.noContent().build());
+                .then(ServerResponse.noContent().build())
+                .switchIfEmpty(Mono.error(new ReviewNotFoundException("Review not found.")));
     }
 
     private void validate(Review review) {
