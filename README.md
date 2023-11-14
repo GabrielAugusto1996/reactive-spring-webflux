@@ -33,3 +33,9 @@ Merge is just available for Flux and the method is static, MergeWith is availabl
 
 Zip and ZipWith are operators that merge 2 to 8 publishers in one.
 Zip is just available for Flux and the method is static, ZipWith is available for Flux and Mono and the method is an instance.
+
+---
+
+Sink - Subscriber and Publisher at the same time
+Sinks.One = One event
+Sinks.Many = Many events
