@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -27,6 +28,10 @@ public class MovieInfoRestClient {
 
     public Mono<MovieInfo> findMovieInfoById(String movieInfoId) {
         System.out.println("Making a call to find a movie by ID:" + movieInfoId);
+
+        var retrySpec = Retry.backoff(3L, Duration.ofMillis(500))
+                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> Exceptions.propagate(retrySignal.failure()));
+
         return webClient
                 .get()
                 .uri(URI.create(movieInfoBaseUrl + "/v1/movieinfos/" + movieInfoId))
@@ -44,6 +49,6 @@ public class MovieInfoRestClient {
                         .bodyToMono(String.class)
                         .flatMap(responseMessage -> Mono.error(new MoviesInfoServerException(responseMessage))))
                 .bodyToMono(MovieInfo.class)
-                .retryWhen(Retry.backoff(3L, Duration.ofMillis(500)));
+                .retryWhen(retrySpec);
     }
 }
