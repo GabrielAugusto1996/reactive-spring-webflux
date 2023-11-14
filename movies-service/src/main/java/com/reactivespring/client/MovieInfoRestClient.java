@@ -24,6 +24,7 @@ public class MovieInfoRestClient {
     }
 
     public Mono<MovieInfo> findMovieInfoById(String movieInfoId) {
+        System.out.println("Making a call to find a movie by ID:" + movieInfoId);
         return webClient
                 .get()
                 .uri(URI.create(movieInfoBaseUrl + "/v1/movieinfos/" + movieInfoId))
@@ -40,6 +41,7 @@ public class MovieInfoRestClient {
                 .onStatus(HttpStatus::is5xxServerError, clientResponse -> clientResponse
                         .bodyToMono(String.class)
                         .flatMap(responseMessage -> Mono.error(new MoviesInfoServerException(responseMessage))))
-                .bodyToMono(MovieInfo.class);
+                .bodyToMono(MovieInfo.class)
+                .retry(3L);
     }
 }
