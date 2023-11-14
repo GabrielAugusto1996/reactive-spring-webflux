@@ -1,6 +1,6 @@
 restClient:
-  movieInfoUrl: localhost:8082
-  reviewUrl: localhost:8083
+  movieInfoUrl: http://localhost:8082
+  reviewUrl: http://localhost:8083
 spring:
   profiles:
     active: local
