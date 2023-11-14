@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -58,5 +59,28 @@ class MoviesControllerIntTest {
                     Assertions.assertNotNull(movie);
                     Assertions.assertEquals(2, movie.getReviewList().size());
                 });
+    }
+
+    @Test
+    void retrieveMovieById_Movie_WhenNotFound() {
+        //given
+        var movieId = "1";
+
+        stubFor(get(urlEqualTo("/v1/movieinfos/" + movieId))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(HttpStatus.NOT_FOUND.value())));
+
+        stubFor(get(urlEqualTo("/v1/reviews?moviesinfo=" + movieId))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(HttpStatus.NOT_FOUND.value())));
+
+        //when
+        webTestClient.
+                get()
+                .uri("/v1/movies/{id}", movieId)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }
