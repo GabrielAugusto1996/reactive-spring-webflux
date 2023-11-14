@@ -3,6 +3,7 @@ package com.reactivespring.controller;
 import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.service.MovieInfoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/movieinfos")
 public class MoviesInfoController {
+
+    Sinks.Many<MovieInfo> moviesInfoSynk = Sinks.many().replay().all();
 
     private final MovieInfoService movieInfoService;
 
@@ -32,6 +36,7 @@ public class MoviesInfoController {
     public Mono<ResponseEntity<MovieInfo>> addMovieInfo(@Valid @RequestBody MovieInfo movieInfo) {
 
         return this.movieInfoService.addMovie(movieInfo)
+                .doOnNext(savedMovieInfo -> moviesInfoSynk.tryEmitNext(savedMovieInfo))
                 .map(movie -> ResponseEntity.status(HttpStatus.CREATED).body(movie));
     }
 
@@ -41,6 +46,13 @@ public class MoviesInfoController {
         return this.movieInfoService.findById(id)
                 .map(movie -> ResponseEntity.status(HttpStatus.OK).body(movie))
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
+    }
+
+
+    @GetMapping(value = "/stream", produces = MediaType.APPLICATION_NDJSON_VALUE) // Stream as a JSON
+    public Flux<MovieInfo> movieInfoStream() {
+
+        return moviesInfoSynk.asFlux();
     }
 
     @GetMapping
